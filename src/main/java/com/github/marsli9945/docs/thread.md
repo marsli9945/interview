@@ -1,5 +1,10 @@
 # JUC高并发
 
+## 口诀
+高内聚低耦合的前提下，线程操作资源类
+判断、干活、唤起通知
+严防多线程并发状态下的虚假唤醒
+
 ### JUC含义
 - java.util.concurrent
 - java.util.concurrent.atomic
