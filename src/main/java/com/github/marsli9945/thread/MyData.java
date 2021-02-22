@@ -12,14 +12,14 @@ class MyData
         System.out.println("num add 60");
     }
 
-    public void addPlusPlus()
+    void addPlusPlus()
     {
         number++;
     }
 
     AtomicInteger atomicInteger = new AtomicInteger();
 
-    public void addMyAtomic()
+    void addMyAtomic()
     {
         atomicInteger.getAndIncrement();
     }
