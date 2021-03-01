@@ -22,11 +22,6 @@ public class ContainerNoSafeDemo
                 System.out.println(map);
             }, String.valueOf(i)).start();
         }
-
-        /**
-         *
-         */
-
     }
 
     public void setNotsafe()
