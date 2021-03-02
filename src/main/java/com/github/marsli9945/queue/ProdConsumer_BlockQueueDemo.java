@@ -2,6 +2,7 @@ package com.github.marsli9945.queue;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -74,7 +75,7 @@ public class ProdConsumer_BlockQueueDemo
 {
     public static void main(String[] args) throws Exception
     {
-        MyResource myResource = new MyResource(new ArrayBlockingQueue<>(10));
+        MyResource myResource = new MyResource(new LinkedBlockingDeque<>(10));
 
         new Thread(() ->
         {
