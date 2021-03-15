@@ -43,5 +43,12 @@
 
 ### 线程池原理
 ![](static/pool.png)
+![](static/pool2.png)
+
+##### 线程池的四种拒绝策略
+![](static/nohandle.png)
+
+### 死锁
+![](static/die.png)
 
 
