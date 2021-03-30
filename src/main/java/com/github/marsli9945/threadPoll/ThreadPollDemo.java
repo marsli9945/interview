@@ -40,9 +40,9 @@ public class ThreadPollDemo {
     }
 
     void threadPoolInit(){
-//        ExecutorService pool = Executors.newFixedThreadPool(5);// 一池5个线程
-//        ExecutorService pool = Executors.newSingleThreadExecutor();// 一池1个线程
-        ExecutorService pool = Executors.newCachedThreadPool();// 一池n个线程
+        ExecutorService pool = Executors.newFixedThreadPool(5);// 一池5个线程
+        ExecutorService pool1 = Executors.newSingleThreadExecutor();// 一池1个线程
+        ExecutorService pool2 = Executors.newCachedThreadPool();// 一池n个线程
 
         // 模拟10个用户办理业务，每个用户就是一个来自外部的请求线程
         try {
