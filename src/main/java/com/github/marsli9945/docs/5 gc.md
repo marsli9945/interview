@@ -1,4 +1,6 @@
 ### GC 算法
+#### jvm结构
+![img.png](static/jvm.png)
 #### 引用计数
 ![](static/引用计数.png)
 

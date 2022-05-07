@@ -27,25 +27,29 @@ class Phone implements Runnable
         get();
     }
 
-    private void get(){
+    private void get()
+    {
         lock.lock();
         try
         {
-            System.out.println(Thread.currentThread().getName()+"\t invoked get()");
+            System.out.println(Thread.currentThread().getName() + "\t invoked get()");
             set();
-        } finally
+        }
+        finally
         {
             lock.unlock();
         }
     }
 
-    private void set() {
+    private void set()
+    {
         lock.lock();
         lock.lock();
         try
         {
-            System.out.println(Thread.currentThread().getName()+"\t invoked set()");
-        }finally
+            System.out.println(Thread.currentThread().getName() + "\t invoked set()");
+        }
+        finally
         {
             lock.unlock();
             lock.unlock();
@@ -56,7 +60,6 @@ class Phone implements Runnable
 
 /**
  * 可重入锁
- *
  */
 public class ReenterLockDemo
 {
@@ -64,7 +67,8 @@ public class ReenterLockDemo
     {
         Phone phone = new Phone();
 
-        new Thread(()->{
+        new Thread(() ->
+        {
             try
             {
                 phone.sendSMS();
@@ -73,9 +77,10 @@ public class ReenterLockDemo
             {
                 e.printStackTrace();
             }
-        },"t1").start();
+        }, "t1").start();
 
-        new Thread(()->{
+        new Thread(() ->
+        {
             try
             {
                 phone.sendSMS();
@@ -84,7 +89,7 @@ public class ReenterLockDemo
             {
                 e.printStackTrace();
             }
-        },"t2").start();
+        }, "t2").start();
 
         TimeUnit.SECONDS.sleep(1);
 
@@ -93,8 +98,8 @@ public class ReenterLockDemo
         System.out.println();
         System.out.println();
 
-        Thread t3 = new Thread(phone,"t3");
-        Thread t4 = new Thread(phone,"t4");
+        Thread t3 = new Thread(phone, "t3");
+        Thread t4 = new Thread(phone, "t4");
 
         t3.start();
         t4.start();

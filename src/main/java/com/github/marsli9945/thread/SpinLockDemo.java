@@ -27,14 +27,15 @@ public class SpinLockDemo
     {
         Thread thread = Thread.currentThread();
         atomicReference.compareAndSet(thread, null);
-        System.out.println(Thread.currentThread().getName()+"\t invoked myUnLock()");
+        System.out.println(Thread.currentThread().getName() + "\t invoked myUnLock()");
     }
 
     public static void main(String[] args)
     {
         SpinLockDemo spinLockDemo = new SpinLockDemo();
 
-        new Thread(()->{
+        new Thread(() ->
+        {
             spinLockDemo.myLock();
             try
             {
@@ -45,7 +46,7 @@ public class SpinLockDemo
                 e.printStackTrace();
             }
             spinLockDemo.myUnlock();
-        },"AA").start();
+        }, "AA").start();
 
         try
         {
@@ -56,7 +57,8 @@ public class SpinLockDemo
             e.printStackTrace();
         }
 
-        new Thread(()->{
+        new Thread(() ->
+        {
             spinLockDemo.myLock();
             try
             {
@@ -67,7 +69,7 @@ public class SpinLockDemo
                 e.printStackTrace();
             }
             spinLockDemo.myUnlock();
-        },"BB").start();
+        }, "BB").start();
 
     }
 }

@@ -10,13 +10,14 @@ public class CountDownLatchDemo
 
         for (int i = 0; i < 6; i++)
         {
-            new Thread(()->{
-                System.out.println(Thread.currentThread().getName()+"\t上完自习，离开教室");
+            new Thread(() ->
+            {
+                System.out.println(Thread.currentThread().getName() + "\t上完自习，离开教室");
                 countDownLatch.countDown();
-            },CountryEnum.foreachCountryEnum(i).getName()).start();
+            }, CountryEnum.foreachCountryEnum(i).getName()).start();
         }
 
         countDownLatch.await();
-        System.out.println(Thread.currentThread().getName()+"\t ********************班长最后关门走人");
+        System.out.println(Thread.currentThread().getName() + "\t ********************班长最后关门走人");
     }
 }

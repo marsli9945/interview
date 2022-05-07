@@ -9,30 +9,34 @@ class MyCache
     private volatile Map<String, Object> map = new HashMap<>();
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public void put(String key, Object value) {
+    public void put(String key, Object value)
+    {
         lock.writeLock().lock();
 
         try
         {
-            System.out.println(Thread.currentThread().getName()+"\t 正在写入: "+ key);
-            map.put(key,value);
-            System.out.println(Thread.currentThread().getName()+"\t 写入完成: "+ key);
+            System.out.println(Thread.currentThread().getName() + "\t 正在写入: " + key);
+            map.put(key, value);
+            System.out.println(Thread.currentThread().getName() + "\t 写入完成: " + key);
 
-        } finally
+        }
+        finally
         {
             lock.writeLock().unlock();
         }
 
     }
 
-    public void get(String key) {
+    public void get(String key)
+    {
         lock.readLock().lock();
         try
         {
-            System.out.println(Thread.currentThread().getName()+"\t 正在读取: "+ key);
+            System.out.println(Thread.currentThread().getName() + "\t 正在读取: " + key);
             Object result = map.get(key);
-            System.out.println(Thread.currentThread().getName()+"\t 读取完成: "+ result);
-        } finally
+            System.out.println(Thread.currentThread().getName() + "\t 读取完成: " + result);
+        }
+        finally
         {
             lock.readLock().unlock();
         }
@@ -53,17 +57,19 @@ public class ReadWriteLockDemo
         for (int i = 0; i < 5; i++)
         {
             final int tempInt = i;
-            new Thread(()->{
-                myCache.put(tempInt+"", tempInt+"");
-            },String.valueOf(i)).start();
+            new Thread(() ->
+            {
+                myCache.put(tempInt + "", tempInt + "");
+            }, String.valueOf(i)).start();
         }
 
         for (int i = 0; i < 5; i++)
         {
             final int tempInt = i;
-            new Thread(()->{
-                myCache.get(tempInt+"");
-            },String.valueOf(i)).start();
+            new Thread(() ->
+            {
+                myCache.get(tempInt + "");
+            }, String.valueOf(i)).start();
         }
     }
 }
