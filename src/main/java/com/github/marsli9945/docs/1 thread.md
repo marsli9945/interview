@@ -39,7 +39,7 @@ CAS --> Unsafe --> CAS底层思想 --> ABA --> 原子引用更新 --> 如何规�
 操作特定内存的数据。Unsafe类存在与sun.misc包中，其内部方法操作可以像C的指针一样直接操作内存，因为Java中CAS操作的执行依赖
 与Unsafe类的方法
 > 注意Unsafe类中的所有方法都是native修饰的，也就是说Unsafe类中的方法都直接调用操作系统底层资源执行相应任务
-缺点：cup资源消耗、ABA问题
+缺点：cpu资源消耗、ABA问题
 
 
 

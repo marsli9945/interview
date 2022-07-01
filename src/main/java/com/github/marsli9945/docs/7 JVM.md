@@ -126,10 +126,6 @@ NewRatio值就是设置老年代的占比，剩下的1给新生代
 默认值为15，可设置值为0到15之间<br/>
 一般使用默认不会调整
 
-### 垃圾回收器
-- -XX:+UseParallelGC 并行垃圾回收器，jdk8默认使用
-- -XX:+UseSerialGC 串行垃圾回收器
-
 ### 强引用、软引用、弱引用、虚引用
 > java提供了四种引用类型，在垃圾回收的时候，都有自己各自的特点。<br/>
 > ReferenceQueue是用来配合引用工作的，没有ReferenceQueue一样可以运行。
@@ -182,3 +178,158 @@ NewRatio值就是设置老年代的占比，剩下的1给新生代
 #### 因为目前位置还没有完美的收集器出现，更加没有万能的收集器，只是针对具体应用最合适的收集器，进行分代收集
 #### 四种主要垃圾回收器
 ![img.png](static/lajihuishouqi.png)
+##### 串行垃圾回收器(Serial) 
+> -XX:+UseSerialGC <br/>
+> -XX:+UseSerialOldGC(废弃) <br/>
+> 它为单线程环境设计且只使用一个线程进行垃圾回收，会暂停所有用户线程。所以不适合服务器环境
+##### 并行垃圾回收器(Parallel) 
+> -XX:+UseParallelGC <br/>
+> -XX:+UseParallelOldGC <br/>
+> 多个垃圾收集线程并行工作，此时用户线程是暂停的，适用于科学计算/大数据处理首台处理等弱交互场景
+##### 并发垃圾回收器(CMS) 
+> -XX:+UseConcMarkSweepGC <br/>
+> -XX:+UseParNewGC <br/>
+> 用户线程和垃圾回收线程同时执行(不一定是并行，可能是交替执行)，不需要停顿用户线程<br/>
+> 互联网公司多用它，使用对响应时间有要求的场景
+##### 上面3个小总结
+![img.png](static/gcxiaozongjie.png)
+##### G1垃圾回收器(Serial)
+> -XX:+UseG1GC <br/>
+> G1垃圾回收器将堆内存分割成不同的区域，然后并发的对其进行垃圾回收
+##### GC算法整体概述
+![img.png](static/gczongtigaishu.png)
+
+### 如何查看jvm默认的垃圾回收器
+> java -XX:+PrintCommandLineFlags -version
+### 垃圾收集器有哪些
+![img.png](static/lajishoujiqi.png)
+![img.png](static/lajishoujiqi2.png)
+
+#### 部分参数预先说明
+- DefNew: Default New Generation 新生代默认的垃圾回收器
+- Tenured: Old 老年代使用串行垃圾回收
+- ParNew: Parallel New Generation 新生代用并行回收器，老年代用串行
+- PSYoungGen: Parallel Scavenge 在年轻代使用并行垃圾回收器
+- ParOldGen: Parallel Old Generation 在老年代用并行垃圾回收器
+
+#### Server/Client模式分别什么意思
+![img.png](static/serverclient.png)
+
+#### 新生代
+##### 串行GC(Serial/Serial Copying)
+![img.png](static/chuanxing.png)
+![img.png](static/chuanxing2.png)
+##### 并行GC(ParNew)
+![img.png](static/bingxing.png)
+![img.png](static/bingxing2.png)
+##### 并行回收GC(Parallel/Parallel Scavenge)
+![img.png](static/bingxinghuishou.png)
+![img.png](static/bingxinghuishou2.png)
+
+#### 老年代
+##### 串行GC(Serial/Serial Copying)
+![img.png](static/serialold.png)
+##### 并行GC(Parallel Old)
+![img.png](static/bingxingold.png)
+##### 并发标记清除GC(CMS)
+![img.png](static/cms.png)
+![img.png](static/cms2.png)
+###### 四步过程
+![img.png](static/cms4b.png)
+- 初始标记(CMS initial mark) 
+> 只是标记一下GCRoot能直接关联的对象，速度很快，仍然需要暂停所有工作线程。
+- 并发标记(CMS concurrent mark) 
+>进行GCRoot跟踪的过程，和用户线程一起工作，不需要暂停工作线程。主要标记过程，标记全部对象。
+- 重新标记(CMS remark)
+> 为了修正并发标记期间，因用户线程继续运行导致标记发生变动的部分对象的标记记录，仍然需要暂停所有工作线程。<br/>
+> 由于并发标记时，用户线程依然运行，因此在正式清理前，再做修正。
+- 并发清除(CMS concurrent sweep)和用户线程一起
+> 清除GCRoot不可达对象，和用户线程一起工作，不需要暂停工作线程。基于标记结果，直接清理对象<br/>
+> 由于耗时最长的并发标记和并发清除过程中，垃圾收集线程可以和工作线程一起并发工作，<br/>
+> 所以从总体上看，CMS收集器的内存回收和用户线程是一起并发执行的。
+###### 优缺点
+####### 优点
+- 并发收集低停顿
+####### 缺点
+- 并发执行对CPU资源压力大
+- 采用标记清除算法会产生大量碎片
+#### 如何选择垃圾收集器
+![img.png](static/shoujiqixuanze.png)
+
+### G1垃圾收集器
+#### 以前收集器的特点
+- 年轻代和老年代是各自独立且连续的内存块
+- 年轻代收集使用单eden+s0+s1进行复制算法
+- 老年代收集必须扫描整个老年代区域
+- 都是以尽可能少而快速的执行GC为设计原则
+#### G1是什么
+![img.png](static/whatg1.png)
+![img.png](static/whatg1-2.png)
+#### G1的特点
+![img.png](static/g1tedian.png)
+#### 底层原理
+##### Region区域化垃圾收集器
+最大的好处是化整为零，避免全内存扫描，只需要按照区域来扫描即可。
+![img.png](static/region.png)
+![img.png](static/region2.png)
+![img.png](static/region3.png)
+##### 回收步骤
+![img.png](static/g1huishoubuzhou.png)
+##### 4步过程
+![img.png](static/g14b.png)
+##### 常用配置参数
+![img.png](static/g1canshu.png)
+- -XX:+UseG1GC 开启G1垃圾收集器
+- -XX:G1HeapRegionSize=n 设置G1区域的大小。值是2的幂，范围是1MB到32MB。
+- -XX:MaxGCPauseMillis=n 最大GC停顿时间，这个是软目标，JVM将尽可能(但不保证)停顿小于这个时间。
+- -XX:InitiatingHeapOccupancyPercent=n 堆栈用了多少的时候触发GC，默认是45
+- -XX:ConcGCThreads=n 并发GC使用的线程数
+- -XX:G1ResevePercent=n 设置作为空闲空间的预留内存百分比，以降低目标空间溢出的风险，默认是10%
+#### G1和CMS比的优势
+![img.png](static/g1vscms.png)
+
+### springBoot
+![img.png](static/jvm+spring.png)
+
+### 生产环境服务变慢，诊断思路和性能评估
+#### 整机：top
+![img.png](static/top.png)
+> load average: 0.04, 0.19, 0.17<br/>
+> 代表系统1分钟、5分钟、15分钟的平均负载<br/>
+> 如果 (v1+v2+v3)/3 > 0.6 代表系统压力重<br/>
+> 按s查看cpu具体核负载<br/>
+> uptime 是 top 的精简版
+#### CPU：vmstat
+> vmstat -n 2 3<br/>
+> 每2秒采样一次，共采样3次
+![img.png](static/vmstat.png)
+![img.png](static/vmstat2.png)
+##### 额外
+> mpstat -P ALL 2 查看所有核心的信息<br/>
+> pidstat -u 1 -p <进程号> 每个进程使用cpu的用量分解信息
+#### 内存：free
+- free 单位字节
+- free -g 单位G
+- free -m 单位M，首选
+![img.png](static/free.png)
+##### 额外
+> pidstat -p <进程号> -r <采样间隔秒数> 每个进程使用内存的用量分解信息
+#### 硬盘：df
+- df -h
+#### 磁盘IO：iostat
+![img.png](static/iostat.png)
+![img.png](static/iostat2.png)
+##### 额外
+> pidstat -p <进程号> -d <采样间隔秒数> 每个进程使用磁盘IO的用量分解信息
+#### 网络IO：ifstat
+![img.png](static/ifstat.png)
+![img.png](static/ifstat2.png)
+
+### 生产环境CPU占用过高，解决的分析思路和定位
+![img.png](static/cpuErr.png)
+![img.png](static/cpuErr2.png)
+#### 定位线程
+![img.png](static/cpuErr3.png)
+![img.png](static/cpuErr4.png)
+
+
