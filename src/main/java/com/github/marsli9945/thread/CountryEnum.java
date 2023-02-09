@@ -14,8 +14,8 @@ public enum CountryEnum
     FIVE(5, "魏国"),
     SIX(1, "韩国");
 
-    private Integer num;
-    private String name;
+    private final Integer num;
+    private final String name;
 
     public static CountryEnum foreachCountryEnum(int index)
     {
