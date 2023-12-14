@@ -7,7 +7,7 @@ import java.util.concurrent.CyclicBarrier;
  * 加法等待
  * 当等待线程到达指定数时出发回调方法
  */
-public class CyclicBarrierDemo
+public class  CyclicBarrierDemo
 {
     public static void main(String[] args)
     {

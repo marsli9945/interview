@@ -33,11 +33,7 @@ public class CompletableFutureDemo {
     private static void supplyAsync() throws ExecutionException, InterruptedException {
         CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
             System.out.println("有返回值的异步任务");
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            try {Thread.sleep(5000);} catch (InterruptedException ignore) {}
             return "Hello World";
         });
         System.out.println(future.get());

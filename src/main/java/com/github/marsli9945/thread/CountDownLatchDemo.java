@@ -16,7 +16,6 @@ public class CountDownLatchDemo
                 countDownLatch.countDown();
             }, CountryEnum.foreachCountryEnum(i).getName()).start();
         }
-
         countDownLatch.await();
         System.out.println(Thread.currentThread().getName() + "\t ********************班长最后关门走人");
     }
